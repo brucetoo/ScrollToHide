@@ -1,0 +1,36 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+    <!--
+      android:layout_marginTop="?attr/actionBarSize"
+    android:clipToPadding="false" 这个控制padding的参数好像现在还没支持-->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        />
+    <ImageButton
+        android:id="@+id/fabButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/fab_bg"
+        android:src="@mipmap/ic_heart"
+        android:scaleType="centerInside"
+        android:paddingTop="5dp"
+        android:contentDescription="@null"/>
+    
+    <!--此处用FrameLayout是要保证Recycler 和 toolBar的层级效果
+      contentDescription 用于一些没有setText属性的控件为其设置描述
+      避免可能提示错误
+    -->
+</FrameLayout>
