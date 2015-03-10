@@ -1,14 +1,13 @@
 package com.bruce.scrolltohide;
 
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
@@ -16,6 +15,8 @@ import android.widget.ImageButton;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -37,7 +38,26 @@ public class MainActivity extends ActionBarActivity {
     private void initRecyclerView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(new RecyclerAdapter(createItemList()));
+        final RecyclerAdapter adapter = new RecyclerAdapter(createItemList());
+        mRecyclerView.setAdapter(adapter);
+        /*
+            recyclerview-animators 包含了增加删除的动画
+            
+            LandingAnimator
+            
+            ScaleInAnimator, ScaleInTopAnimator, ScaleInBottomAnimator
+            ScaleInLeftAnimator, ScaleInRightAnimator
+            
+            FadeInAnimator, FadeInDownAnimator, FadeInUpAnimator
+            FadeInLeftAnimator, FadeInRightAnimator
+            
+            FlipInTopXAnimator, FlipInBottomXAnimator
+            FlipInLeftYAnimator, FlipInRightYAnimator
+            
+            SlideInLeftAnimator, SlideInRightAnimator, OvershootInLeftAnimator, OvershootInRightAnimator
+            SlideInUpAnimator, SlideInDownAnimator
+         */
+        mRecyclerView.setItemAnimator(new SlideInDownAnimator());
         mRecyclerView.setOnScrollListener(new ScrollHideListener() {
             @Override
             public void onHide() {
@@ -49,6 +69,18 @@ public class MainActivity extends ActionBarActivity {
                showViews();
             }
         });
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this,mRecyclerView,
+                new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                adapter.remove(position);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+                adapter.add(position,"new item");
+            }
+        }));
     }
 
     private void initToolBar() {
@@ -83,16 +115,6 @@ public class MainActivity extends ActionBarActivity {
         mFabButton.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
     }
 
-
-    private int getActionBarSize() {
-        TypedValue typedValue = new TypedValue();
-        int[] textSizeAttr = new int[]{R.attr.actionBarSize};
-        int indexOfAttrTextSize = 0;
-        TypedArray a = obtainStyledAttributes(typedValue.data, textSizeAttr);
-        int actionBarSize = a.getDimensionPixelSize(indexOfAttrTextSize, -1);
-        a.recycle();
-        return actionBarSize;
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

@@ -113,4 +113,24 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public boolean isHeaderView(int position){
        return position == 0;
     }
+
+
+    /**
+     * 删除item
+     * * @param position
+     */
+    public void remove(int position){
+        mItemList.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    /**
+     * 添加item* 
+     * @param position
+     * @param text
+     */
+    public void add(int position,String text){
+        mItemList.add(position,text);
+        notifyItemInserted(position);
+    }
 }
