@@ -23,12 +23,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     /**
-     * 获取recycler item 中的每个view  (TYPE_ITEM)
+     * ItemViewHolder  (TYPE_ITEM)
      */
-    public static final class ViewHolder extends RecyclerView.ViewHolder {
+    public static final class ItemViewHolder extends RecyclerView.ViewHolder {
         private TextView mTextView;
 
-        public ViewHolder(View itemView, TextView textView) {
+        public ItemViewHolder(View itemView, TextView textView) {
             super(itemView);
             this.mTextView = textView;
         }
@@ -39,9 +39,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
          * @param itemView
          * @return
          */
-        public static ViewHolder newInstance(View itemView) {
+        public static ItemViewHolder newInstance(View itemView) {
             TextView textView = (TextView) itemView.findViewById(R.id.itemTextView);
-            return new ViewHolder(itemView, textView);
+            return new ItemViewHolder(itemView, textView);
         }
 
         /**
@@ -54,7 +54,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     /**
-     * ViewHolder （TYPE_HEADER）*
+     * HeadViewHolder （TYPE_HEADER）*
      */
     public static final class HeaderViewHolder extends RecyclerView.ViewHolder{
         public HeaderViewHolder(View itemView) {
@@ -68,17 +68,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType == TYPE_ITEM) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item, parent, false);
-            return ViewHolder.newInstance(view); //创建item viewHolder
-        }else{
+            return ItemViewHolder.newInstance(view); //创建item viewHolder
+        }else if(viewType == TYPE_HEADER){
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_header, parent, false);
             return new HeaderViewHolder(view); //创建head viewHolder
         }
+        //item 没有匹配抛出异常
+        throw new RuntimeException(viewType+" is not exist");
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if(!isHeaderView(position)) {
-            ViewHolder hold = (ViewHolder) holder; //绑定viewHolder
+        if(!isHeaderView(position)) {  //只处理非headview
+            ItemViewHolder hold = (ItemViewHolder) holder; //绑定viewHolder
             hold.setTextView(mItemList.get(position-1)); //减1 是因为顶部有一个headerView
         }
     }
@@ -90,7 +92,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
     /**
-     * 重新设置对应的item type
+     * 有不同type时 需要重写
      * @param position
      * @return
      */
